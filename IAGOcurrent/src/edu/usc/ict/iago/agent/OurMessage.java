@@ -18,7 +18,7 @@ import edu.usc.ict.iago.utils.ServletUtils;
 
 
 public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
-	protected final String[] proposal = {"I think this deal is good for the both of us.", 
+	protected final String[] proposal = {"I think this deal is good for the both of us. Do you agree?", 
 			"I think you'll find this offer to be satisfactory.", 
 			"I think this arrangement is fair.", 
 			"I think this deal will interest you.",
