@@ -1,0 +1,359 @@
+h1, h2 {
+    display: inline-block;
+}
+
+h1 {
+    font-size: 20px
+}
+
+h2 {
+    font-size: 20px;
+}
+.box {
+  border: 2px solid blue;
+	padding: 0px;
+}
+
+#butItemsDiv {
+    border-radius: 15px;
+    background: #ffffff;
+}
+
+.rounded-box-dark {
+    border-radius: 15px;
+    background: #808080;
+}
+
+.wrong {
+    color: red;
+}
+
+/* unused currently; flex is much better*/
+
+/* a sneaky trick to allow us to ghost elements for vertical centering */
+
+#resizeMe {
+  padding: 2px;
+  resize: both;
+  position: relative;
+  height: 100%;
+}
+#mainContainer {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  position:relative;
+	
+}
+
+.shrink{
+-webkit-transform: scale(.75);
+	-moz-transform:scale(.75);
+	-ms-transform:scale(.75);
+	transform:scale(.75);
+}
+
+
+.container:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -0.25em;
+    /* Adjusts for spacing */
+}
+
+/* The element to be centered, can also be of any width and height */
+
+.centered-vertical {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.instruction-pic {
+    display: relative;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+}
+
+.flex-vert {
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+}
+
+.flex-vert-space-between {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: column;
+}
+
+.flex-table {
+    display: flex;
+    align-items: center;
+    flex-flow: column;
+    justify-content: center;
+}
+
+.flex-child {
+    margin: 2px;
+    flex: 1 1 auto;
+    min-height: 25px;
+}
+
+.flex-child-no-grow {
+    margin: 5px;
+    flex: 0 1 auto;
+    min-height: 25px;
+}
+
+.flex-child-no-shrink {
+	margin: .5%;
+	flex: 1 0 auto;
+}
+
+.flex-double-child {
+    margin: 5px;
+    flex: 2 2 auto;
+}
+
+.messages {
+    min-height: 30%;
+    height: 30%;
+}
+
+#vhImg {
+    -webkit-transition: box-shadow linear 1s;
+    transition: box-shadow linear 1s;
+}
+
+.buttons input[type=button].butPanel {
+    max-height: 40px;
+    font-size: 15px;
+    font-family: sans-serif;
+}
+
+.buttons #butStartOffer {
+    max-height: 40px;
+    font-size: 15px;
+    font-family: sans-serif;
+}
+
+.centered {
+    margin: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.reallyHidden {
+    display: none;
+}
+
+.scrolling {
+    overflow: scroll;
+}
+
+#exchange-grid {
+    position: relative;
+    z-index: 1;
+}
+
+.vert-align-top {
+    vertical-align: top;
+}
+
+.vert-align {
+    vertical-align: middle;
+}
+
+.vert-align-bot {
+    vertical-align: bottom;
+}
+
+/* 20% doesn't work here...? */
+
+.tableSlot {
+    flex: 1;
+    /*height: 18%;
+	max-height: 18%;*/
+    padding: 2px;
+    background: #FFFFFF;
+}
+
+.tableSlot-noBox {
+    flex: 1;
+    /*height: 18%;
+	max-height: 18%;*/
+    padding: 4px;
+}
+
+/* The slider itself */
+
+.slider {
+    -webkit-appearance: none;
+    /* Override default CSS styles */
+    appearance: none;
+    width: 100%;
+    /* Full-width */
+    height: 10px;
+    /* Specified height */
+    background: #d3d3d3;
+    /* Grey background */
+    outline: none;
+    /* Remove outline */
+    opacity: 0.7;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+
+.slider:hover {
+    opacity: 1;
+    /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    width: 15px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    border-radius: 50%;
+    background: #000000;
+    /* Black background */
+    cursor: pointer;
+    /* Cursor on hover */
+    opacity: 1;
+}
+
+.slider::-moz-range-thumb {
+    width: 15px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    border-radius: 50%;
+    background: #000000;
+    /* Black background */
+    cursor: pointer;
+    /* Cursor on hover */
+    opacity: 1;
+}
+
+.butText {
+    font-size: 14px;
+}
+
+/* Variant : for top positioned triangle
+------------------------------------------ */
+
+.triangle-isosceles.top {
+  background:-webkit-gradient(linear, 0 0, 0 100%, from(#f3961c), to(#f9d835));
+  background:-moz-linear-gradient(#f3961c, #f9d835);
+  background:-o-linear-gradient(#f3961c, #f9d835);
+  background:linear-gradient(#f3961c, #f9d835);
+}
+
+/* Variant : for left positioned triangle
+------------------------------------------ */
+
+.triangle-isosceles.left {
+  margin-left:50px;
+  background:#454545;
+  text-align: left;
+  border-radius: 15px;
+}
+
+/* Variant : for right positioned triangle
+------------------------------------------ */
+
+.triangle-isosceles.right {
+  margin-right:50px;
+  background:#648aae;
+  text-align: right;
+  border-radius: 15px;
+}
+  
+  /* Variant : for right positioned red triangle
+------------------------------------------ */
+
+.triangle-isosceles.right.lie {
+  margin-right:50px;
+  background:#D80000;
+  text-align: right;
+  border-radius: 15px;
+}
+
+/* THE TRIANGLE
+------------------------------------------------------------------------------------------------------------------------------- */
+
+/* creates triangle */
+.triangle-isosceles:after {
+  content:"";
+  position:absolute;
+  bottom:-15px; /* value = - border-top-width - border-bottom-width */
+  left:50px; /* controls horizontal position */
+  border-width:15px 15px 0; /* vary these values to change the angle of the vertex */
+  border-style:solid;
+  border-color:#0080c0 transparent;
+  /* reduce the damage in FF3.0 */
+  display:block;
+  width:0;
+}
+
+/* Variant : top
+------------------------------------------ */
+
+.triangle-isosceles.top:after {
+  top:-15px; /* value = - border-top-width - border-bottom-width */
+  right:50px; /* controls horizontal position */
+  bottom:auto;
+  left:auto;
+  border-width:0 15px 15px; /* vary these values to change the angle of the vertex */
+  border-color:#0080c0 transparent;
+}
+
+/* Variant : left
+------------------------------------------ */
+
+.triangle-isosceles.left:after {
+  top:16px; /* controls vertical position */
+  left:-50px; /* value = - border-left-width - border-right-width */
+  bottom:auto;
+  border-width:10px 50px 10px 0;
+  border-color:transparent #454545;
+}
+
+/* Variant : right
+------------------------------------------ */
+
+.triangle-isosceles.right:after {
+  top:16px; /* controls vertical position */
+  right:-50px; /* value = - border-left-width - border-right-width */
+  bottom:auto;
+  left:auto;
+  border-width:10px 0 10px 50px;
+  border-color:transparent #648aae;
+}
+
+.triangle-isosceles.right.lie:after {
+  top:16px; /* controls vertical position */
+  right:-50px; /* value = - border-left-width - border-right-width */
+  bottom:auto;
+  left:auto;
+  border-width:10px 0 10px 50px;
+  border-color:transparent #D80000;
+}
+

@@ -1,0 +1,368 @@
+/* page layout */
+
+html, body, main {
+	height: 100%;
+}
+
+html body main {
+    display: flex;
+    flex-flow: column;
+}
+
+main .container {
+    display: flex;
+    flex: 1 1 auto;
+    padding: 0;
+}
+
+main .container .column {
+    display: flex;
+    flex-flow: column;
+    flex: 1 1 0px;
+    padding: 10px 5px;
+    min-width: 500px;
+}
+
+.container .column .card {
+    margin: 5px 0;
+}
+
+.container .column .user-info {
+    display: flex;
+    flex: 1 0 230px;
+}
+
+.container .column .vh-info {
+    display: flex;
+    flex: 0 0 200px;
+}
+
+.user-info .card-body .remote {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 75%;
+    max-height: 100%;
+    background-color: bisque;
+}
+
+.user-info .card-body .local {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    width: 35%;
+    background-color: aquamarine;
+}
+
+.user-info .card-body .time {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+}
+
+.container .column .exchange-table {
+    display: flex;
+    flex: 1 1 200px;
+}
+
+.container .column .but-panel {
+    display: flex;
+    flex: 0 1 190px;
+}
+
+.container .column .chat-panel {
+    display: flex;
+    flex: 1 1 200px;
+    overflow: auto;
+}
+
+.container .column .emoticons-panel {
+    display: flex;
+    flex: 0 0 50px;
+}
+
+.container .column .chat-buttons {
+    display: flex;
+    flex: 0 0 300px;
+    overflow: auto;
+}
+
+main footer {
+    flex: 0 1 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+main footer small {
+    display: inline-block;
+}
+	
+
+/* vh info layout */
+
+.vh-info .card-body {
+    display: flex;
+    flex-flow: row;
+}
+
+.vh-info .card-body .avatar img {
+    width: 200px;
+}
+
+.vh-info .card-body .info {
+    position: relative;
+    padding-left: 20px;
+}
+
+.vh-info .card-body .info .name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.vh-info .card-body .info .status {
+    font-size: 14px;
+}
+
+.vh-info .card-body .info .time {
+    position: absolute;
+    bottom: 0px;
+    font-size: 14px;
+}
+
+.vh-info .card-body .alert-light {
+    font-size: 14px;
+    padding: 5px;
+}
+
+
+/* exchange table layout */
+
+.exchange-table .card-body {
+    display: flex;
+    align-items: center;
+}
+
+.exchange-table .card-body .container {
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+}
+
+.container .column .exchange-table .card-body .exchange-table-row {
+    padding: 0px 10px;
+}
+
+.container .column .exchange-table .card-body * .disabled {
+    opacity: 0.9;
+    -webkit-filter: grayscale(30%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(30%);
+    cursor: not-allowed;
+}
+
+.exchange-table-row-item {
+    position: relative;
+    display: inline-block;
+    width: 85px;
+    margin: 2px;
+    text-align: center;
+}
+
+.exchange-table-row-item.hidden {
+    display: none;
+}
+
+.exchange-table-row-item-image {
+    width: 80px;
+    padding: 2px;
+}
+
+.total-row .exchange-table-row-item {
+    padding: 0 5px;
+}
+
+.exchange-table-row-item.text-muted {
+    text-align: left;
+}
+
+.exchange-table-row-item.total {
+    margin-left: 10px;
+}
+
+.count-badge {
+    position: absolute;
+    right: -2px;
+    top: -2px;
+}
+
+
+/* offer buttons layout */
+
+.container .column .but-panel .card-body {
+	display: flex;
+    flex: 0 1 190px;
+    flex-direction: column;
+    justify-content: center;
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.container .column .but-panel .card-body button {
+	flex: 0 0 auto;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+
+/* chat layout */
+
+.chat-panel .emoticon-item {
+	width: 40px;
+  	height: 40px;
+}
+
+.chat-panel .agent-bubble, .chat-panel .user-bubble {
+	max-width: 80%;
+	clear: both;
+    font-size: 14px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+}
+
+.chat-panel .agent-bubble {    
+    float: left;
+}
+
+.chat-panel .user-bubble {
+    float: right;
+}
+
+.override-red {
+	background-color: #fa8288 !important;
+	border-color: #fc4952 !important;
+}
+
+.override-green {
+	background-color: #96ffab !important;
+	border-color: #40ff66 !important;
+}
+
+
+/* emoticons panel */
+
+.emoticons-panel {
+	padding: 5px 20px;
+}
+
+.emoticons-panel .card-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 0;
+}
+
+.emoticons-panel .emoticon-item {
+	width: 44px;
+  	height: 44px;
+    margin: 0 10px;
+    padding: 1px;
+    cursor: pointer;
+  	border: 1px solid transparent;
+  	border-radius: .25rem;
+  	box-shadow: none
+}
+
+.emoticons-panel .emoticon-item.active {
+	border-color: red;
+}
+
+
+/* chat buttons */
+
+.chat-buttons {
+	padding: 5px 20px;
+}
+
+.chat-buttons .compare-panel-message {
+    font-size: 12px;
+}
+
+.chat-buttons .accordion .card .card-header {
+    cursor: pointer;
+    padding: 0;
+}
+
+.chat-buttons .accordion .card .card-header .list-group-item {
+    border: none;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.chat-buttons .butContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.chat-buttons .butContainer.hidden {
+    display: none;
+}
+
+/* legacy styles */
+
+.chat-buttons .butContainer .compare-item {
+    flex: 0 0 auto;
+    width: 60px;
+    height: 60px;
+    padding: 2px;
+    margin: 0 5px;
+}
+
+.chat-buttons .butContainer .compare-item:focus {
+    outline: 0;
+}
+
+
+/* survey */
+
+.iagoSurvey {
+    font-size: 12px;
+}
+
+.iagoSurvey .survey-question {
+    font-weight: 600;
+}
+
+.iagoSurvey .survey-form-item {
+    display: flex;
+    align-items: center;
+    height: 20px;
+    margin: 0px 15px;    
+}
+
+.iagoSurvey .iagoCheckableQuestion {
+    margin-bottom: 2px;
+}
+
+.iagoSurvey label {
+    margin: 0 5px;
+    line-height: 1.5;   
+}
+
+
+/* global */
+
+.fade-in-and-out {
+    -webkit-animation: fadeinout 1s linear forwards;
+    animation: fadeinout 1s linear forwards;
+    opacity: 1;
+}
+
+@-webkit-keyframes fadeinout {
+  50% { opacity: 0; }
+}
+
+@keyframes fadeinout {
+  50% { opacity: 0; }
+}
