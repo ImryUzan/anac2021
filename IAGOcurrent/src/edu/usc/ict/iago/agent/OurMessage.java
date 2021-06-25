@@ -137,18 +137,18 @@ public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
 		if (e.getType() != Event.EventClass.SEND_EXPRESSION)
 			throw new UnsupportedOperationException("The last event wasn't an expresion--this method is inappropriate.");
 		if(e.getMessage().equals("sad") || e.getMessage().equals("angry"))
-			return "What's wrong?";
+			return "What's happend, how can i help?";
 		else if(e.getMessage().equals("happy"))
-			return "Well, at least you're happy!";
+			return "good to see you smile!";
 		else if(e.getMessage().equals("surprised"))
 			return "What, did I surprise you?";
 		else if(e.getMessage().equals("neutral"))
-			return null;
+			return "how can i make you smile?";
 		return "I don't know what face you just made!";
 	}
 
 	protected String getEndOfTimeResponse() {
-		return "We're almost out of time!  Accept this quickly!";
+		return "We're almost out of time!  i think is good for both of us to Accept this offer (quickly)";
 	}
 
 	protected String getSemiFairResponse() {

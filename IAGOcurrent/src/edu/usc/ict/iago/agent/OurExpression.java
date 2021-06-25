@@ -26,14 +26,15 @@ public class OurExpression extends IAGOCoreExpression implements ExpressionPolic
 	{
 		Event last = history.getUserHistory().getLast();
 		if(last.getType().equals(Event.EventClass.SEND_EXPRESSION)){
+			
 			if(last.getMessage().equals("sad") || last.getMessage().equals("neutral"))
-				return "happy";
+				return "sad";
 			else if(last.getMessage().equals("happy"))
 				return "happy";
 			else if(last.getMessage().equals("surprised"))
-				return "happy";
+				return "neutral";
 			else if(last.getMessage().equals("angry"))
-				return "happy";
+				return "sad";
 			else
 				return null;
 		} 

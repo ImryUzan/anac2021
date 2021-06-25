@@ -14,7 +14,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	private Offer allocated;
 	private LedgerBehavior lb = LedgerBehavior.NONE;
 	private int adverseEvents = 0;
-
+	
 	
 	public enum LedgerBehavior
 	{
@@ -29,7 +29,9 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		super();
 		this.lb = lb;
 	}
-		
+	
+	
+	
 	@Override
 	protected void setUtils(AgentUtilsExtension utils)
 	{
@@ -236,10 +238,105 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 //		
 //		return propose;
 	}
-
+	
+	private int[] getFreeProd() {
+		int[] free = new int[game.getNumberIssues()];
+		
+		for(int issue = 0; issue < game.getNumberIssues(); issue++)
+		{
+			free[issue] = allocated.getItem(issue)[1];
+		}
+		return free;
+	}
+	
+	private int getMyBestNow(int[] free) {
+		ArrayList<Integer> vhPref = utils.getMyOrdering();
+		int max = vhPref.get(0);
+		int agentFav = -1;
+		
+		
+		for(int i  = 0; i < game.getNumberIssues(); i++) {
+			if(vhPref.get(i) <= max)
+			{
+				if(free[i]==0) {
+					continue;
+				}
+				agentFav = i;
+				max = vhPref.get(i);
+			}
+		}
+		
+		return agentFav;
+	}
+	
+	private int getPlayerBestNow(int[] free) {
+		
+		ArrayList<Integer> playerPref = utils.getMinimaxOrdering(); 
+		int max = playerPref.get(0);
+		int index = -1;
+		for (int i=0;i<playerPref.size();i++) {
+			if(playerPref.get(i) <= max)
+			{
+				if(free[i]==0) {
+					continue;
+				}
+				index = i;
+				max = playerPref.get(i);
+			}
+		}
+		return index;
+	}
+	
 	@Override
 	protected Offer getTimingOffer(History history) {
-		return null;
+		int[] free = this.getFreeProd();
+		int index = this.getPlayerBestNow(free);
+		int myIndex = this.getMyBestNow(free);
+		
+		Offer propose = new Offer(game.getNumberIssues());
+		if(myIndex==-1) {
+			return null;
+		}
+		for(int issue = 0; issue < game.getNumberIssues(); issue++)
+			propose.setItem(issue, allocated.getItem(issue));
+		
+		if(index==myIndex && free[index]>1) {
+			int[] arr = allocated.getItem(index);
+			arr[2]++;
+			arr[1] = arr[1]-2;
+			arr[0]++;
+			propose.setItem(index, arr);
+			
+			
+			return propose;
+		}else if(index==myIndex) {
+			int[] arr = allocated.getItem(index);
+			arr[1] = arr[1]-1;
+			arr[0]++;
+			propose.setItem(index, arr);
+			free[index]--;
+			index = this.getPlayerBestNow(free);
+			if(index==-1) {
+				return null;
+			}
+			arr = allocated.getItem(index);
+			arr[1] = arr[1]-1;
+			arr[2]++;
+			propose.setItem(index, arr);
+			return propose;
+			
+		}
+		
+		int[] arr = allocated.getItem(myIndex);
+		arr[1] = arr[1]-1;
+		arr[0]++;
+		propose.setItem(index, arr);
+		arr = allocated.getItem(index);
+		arr[1] = arr[1]-1;
+		arr[2]++;
+		propose.setItem(index, arr);
+		return propose;
+	
 	}
 
 	@Override
@@ -285,7 +382,6 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 
 	@Override
 	protected Offer getRejectOfferFollowup(History history) {
-		int i  = 5;
 		return null;
 	}
 	
