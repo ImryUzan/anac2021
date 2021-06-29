@@ -444,6 +444,10 @@ public abstract class IAGOCoreVH extends GeneralVH
 				
 			Offer o = e.getOffer();//incoming offer
 			this.lastOfferReceived = o; 
+			if (behavior instanceof OurBehavior) 
+			{
+				((OurBehavior) behavior).setLastPlayerOffer(o);
+			}
 
 			boolean localFair = false;
 			boolean totalFair = false;
@@ -457,7 +461,7 @@ public abstract class IAGOCoreVH extends GeneralVH
 			int playerDiff = (utils.adversaryValue(o, utils.getMinimaxOrdering()) - utils.adversaryValue(allocated, utils.getMinimaxOrdering()));
 			ServletUtils.log("Player Difference: " + playerDiff, ServletUtils.DebugLevels.DEBUG);
 
-			if(utils.myActualOfferValue(o) >= utils.myActualOfferValue(allocated))
+			if(utils.myActualOfferValue(o) > utils.myActualOfferValue(allocated))
 			{//net positive (o is a better offer than allocated)
 				int myValue = utils.myActualOfferValue(o) - utils.myActualOfferValue(allocated) + behavior.getAcceptMargin();
 				ServletUtils.log("My target: " + myValue, ServletUtils.DebugLevels.DEBUG);

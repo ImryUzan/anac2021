@@ -12,6 +12,7 @@ gamespec=edu.usc.ict.iago.views.ViralGameSpec
 turingMode = enabled
 
 
+
 #Sets the mail credentials for this servlet, which allows it to send email notifications.  Leaving blank is fine; will disable email config.
 #Must be set before sending mail for each servlet.  Multiple servlets may use identical credentials
 #email_user: the user name, e.g., iago
