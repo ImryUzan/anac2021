@@ -421,7 +421,7 @@ public abstract class IAGOCoreVH extends GeneralVH
 			}
 
 			// At 90 second, computer agent will send prompt for user to talk about preferences
-			if (e.getMessage().equals("90") && this.getID() == History.OPPONENT_ID) 
+			if (e.getMessage().equals("5") && this.getID() == History.OPPONENT_ID) 
 			{
 				String str = "By the way, will you tell me a little about your preferences?";
 				Event e1 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.PREF_REQUEST, str, (int) (1000*game.getMultiplier()));

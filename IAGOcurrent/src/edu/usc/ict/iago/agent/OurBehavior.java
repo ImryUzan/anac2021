@@ -18,10 +18,13 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	private int adverseEvents = 0;
 	private Offer lastOffer = null;
 	private int[] lastPlayerOffer = null;
-	private int[] lastAgentOffer = null;
+	
 	private int[] lastAgentOfferAgent = null;
 	private int[] lastAgentOfferPlayer = null;
-	int reject = 0;
+	private int reject_num = 0;
+	private int offer_num=0;
+	private int num_accept = 0;
+	private int reject_local_num = 0;
 	
 	
 	public enum LedgerBehavior
@@ -114,16 +117,16 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		this.lastPlayerOffer = arr;
 	}
 	
-	public void setLastAgentOffer() {
-		int arr[] =new int[game.getNumberIssues()];
-		Offer all = this.allocated;
-		for(int i=0;i<game.getNumberIssues();i++) {
-			arr[i]=all.getItem(i)[1]-this.lastOffer.getItem(i)[1];
-			
-		}
-		this.lastAgentOffer = arr;
-		
-	}
+//	public void setLastAgentOffer() {
+//		int arr[] =new int[game.getNumberIssues()];
+//		Offer all = this.allocated;
+//		for(int i=0;i<game.getNumberIssues();i++) {
+//			arr[i]=all.getItem(i)[1]-this.lastOffer.getItem(i)[1];
+//			
+//		}
+//		this.lastAgentOffer = arr;
+//		
+//	}
 	
 	@Override
 	public Offer getNextOffer(History history) 
@@ -271,7 +274,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			propose.setItem(userFave, new int[] {allocated.getItem(userFave)[0], free[userFave] - 1, allocated.getItem(userFave)[2] + 1});
 			propose.setItem(opponentFave, new int[] {allocated.getItem(opponentFave)[0] + 1, free[opponentFave] - 1, allocated.getItem(opponentFave)[2]});
 		}
-		
+		this.offer_num++;
 		return propose;
 	}
 //	public int scoreOffer(Offer offer)
@@ -396,11 +399,12 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		int myIndex = this.getMyBestNow(free);
 		
 		Offer propose = new Offer(game.getNumberIssues());
+		for(int issue = 0; issue < game.getNumberIssues(); issue++)
+			propose.setItem(issue, allocated.getItem(issue));
+		
 		if(myIndex==-1 || index==-1) {
 			return null;
 		}
-		for(int issue = 0; issue < game.getNumberIssues(); issue++)
-			propose.setItem(issue, allocated.getItem(issue));
 		
 		if(index==myIndex && free[index]>1) {
 			int[] arr = allocated.getItem(index);
@@ -408,8 +412,14 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			arr[1] = arr[1]-2;
 			arr[0]++;
 			propose.setItem(index, arr);
-			
-			
+			int[] agent = new int[game.getNumberIssues()];
+			agent[index]++;
+			this.lastAgentOfferAgent = agent;
+			int[] player = new int[game.getNumberIssues()];
+			player[index]++;
+			this.lastAgentOfferPlayer = player;
+			this.lastOffer = propose;
+			this.offer_num++;
 			return propose;
 		}else if(index==myIndex) {
 			int[] arr = allocated.getItem(index);
@@ -425,6 +435,14 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			arr[1] = arr[1]-1;
 			arr[2]++;
 			propose.setItem(index, arr);
+			this.lastOffer = propose;
+			int[] agent = new int[game.getNumberIssues()];
+			agent[myIndex]++;
+			this.lastAgentOfferAgent = agent;
+			int[] player = new int[game.getNumberIssues()];
+			player[index]++;
+			this.lastAgentOfferPlayer = player;
+			this.offer_num++;
 			return propose;
 			
 		}
@@ -432,12 +450,19 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		int[] arr = allocated.getItem(myIndex);
 		arr[1] = arr[1]-1;
 		arr[0]++;
-		propose.setItem(index, arr);
+		propose.setItem(myIndex, arr);
 		arr = allocated.getItem(index);
 		arr[1] = arr[1]-1;
 		arr[2]++;
 		propose.setItem(index, arr);
 		this.lastOffer = propose;
+		int[] agent = new int[game.getNumberIssues()];
+		agent[myIndex]++;
+		this.lastAgentOfferAgent = agent;
+		int[] player = new int[game.getNumberIssues()];
+		player[index]++;
+		this.lastAgentOfferPlayer = player;
+		this.offer_num++;
 		return propose;
 	
 	}
@@ -474,37 +499,73 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	
 	@Override
 	protected Offer getAcceptOfferFollowup(History history) {
-		
+		int saverPlayer[] = this.lastAgentOfferPlayer;
+		int saverAgent[] = this.lastAgentOfferAgent;
 		Offer of = this.NewOffer();
 		int[] free = this.getFreeProd();
 		int[] oldfree = this.getFreeProd();
-		int arr[] = this.lastAgentOffer;
+		int arr[] = new int[game.getNumberIssues()];
+		int arr1[]=new int[game.getNumberIssues()];
 		
 		
-		double chance =Math.random();
-		boolean flagSame = false;
-		if(chance>0.5) {
-			int temp[]=this.lastAgentOfferAgent;
+		
+		int temp[]=this.lastAgentOfferAgent;
+		int temp1[]=this.lastAgentOfferPlayer;
+		this.lastAgentOfferPlayer=new int[game.getNumberIssues()];
+		this.lastAgentOfferAgent=new int[game.getNumberIssues()];
+		boolean flagSameAgent = false;
+		boolean flagSamePlayer = false;
+		if(this.offer_num<7) {
+			
 			for(int i=0;i<game.getNumberIssues();i++) {
 				if (temp[i]>0 && free[i]>0) {
-					flagSame = true;
+					flagSameAgent = true;
 					int[ ] item = of.getItem(i);
 					of.setItem(i, new int[] {item[0]+1,item[1]-1,item[2]});
 					this.lastAgentOfferAgent[i]++;
+					free[i]--;
 				}
 			}
-			int temp1[]=this.lastAgentOfferPlayer;
-
 			for(int i=0;i<game.getNumberIssues();i++) {
 				if (temp1[i]>0 && free[i]>0) {
-					flagSame = true;
+					flagSamePlayer = true;
 					int[ ] item = of.getItem(i);
-					of.setItem(i, new int[] {item[0]+1,item[1]-1,item[2]});
+					of.setItem(i, new int[] {item[0],item[1]-1,item[2]+1});
 					this.lastAgentOfferPlayer[i]++;
+					free[i]--;
 				}
 			}
 		}
-		if(flagSame) {
+		if(flagSameAgent&&flagSamePlayer) {
+			this.lastOffer = of;
+			this.offer_num++;
+			return of;
+		}else if((!flagSameAgent)&&(flagSamePlayer)) {
+			int i = this.getMyBestNow(free);
+			if(i==-1) {
+				this.lastAgentOfferPlayer = saverPlayer;
+				this.lastAgentOfferAgent = saverAgent;
+				return null;
+				
+			}
+			int[ ] item = of.getItem(i);
+			of.setItem(i, new int[] {item[0]+1,item[1]-1,item[2]});
+			this.lastAgentOfferAgent[i]++;
+			this.lastOffer = of;
+			this.offer_num++;
+			return of;
+			
+		}else if((flagSameAgent)&&(!flagSamePlayer)) {
+			int i = this.getPlayerBestNow(free);
+			if(i==-1) {
+				this.lastAgentOfferPlayer = saverPlayer;
+				this.lastAgentOfferAgent = saverAgent;
+				return null;}
+			int[ ] item = of.getItem(i);
+			of.setItem(i, new int[] {item[0],item[1]-1,item[2]+1});
+			this.lastAgentOfferPlayer[i]++;
+			this.lastOffer = of;
+			this.offer_num++;
 			return of;
 		}
 		
@@ -514,14 +575,19 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		
 
 		for(int i=0;i<oldfree.length;i++) {
-			oldfree[i]+=arr[i];
+			oldfree[i]+=saverAgent[i];
+			oldfree[i]+=saverPlayer[i];
 		}
 		
 		int myIndex = this.getMyBestNow(oldfree);
 		int index = this.getPlayerBestNow(oldfree);
 		boolean flagMyBest = false;
-		int flagEq = 0;
-		if(arr[myIndex]!=0) {
+		if(myIndex==-1) {
+			this.lastAgentOfferPlayer = saverPlayer;
+			this.lastAgentOfferAgent = saverAgent;
+			return null;
+		}
+		if(arr[myIndex]>0) {
 			flagMyBest = true;
 		}
 		if(index==myIndex && flagMyBest) {
@@ -529,6 +595,8 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			free[index]=0;
 			int my = this.getMyBestNow(free);
 			if(my==-1) {
+				this.lastAgentOfferAgent = saverAgent;
+				this.lastAgentOfferPlayer = saverPlayer;
 				return null;
 			}
 			int arr3[] = of.getItem(my);
@@ -540,10 +608,14 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			//give him a random prod
 
 			free[index]=0;
-			chance =Math.random();
+			double chance =Math.random();
 			int in = this.getPlayerBestNow(free);
-
-			if(chance>0.7) {
+			if(myIndex==-1) {
+				this.lastAgentOfferAgent = saverAgent;
+				this.lastAgentOfferPlayer = saverPlayer;
+				return null;
+			}
+			if(chance>0.8) {
 				in = this.getRndomProd(free);
 			}
 			
@@ -554,12 +626,18 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			
 			of.setItem(in,arr2);
 			this.lastOffer = of;
+			this.offer_num++;
 			return of;
 			
 		}
 		
 		if(myIndex==this.getHisWorstNow(oldfree)) {
 			myIndex = this.getMyBestNow(free);
+			if(myIndex==-1) {
+				this.lastAgentOfferAgent = saverAgent;
+				this.lastAgentOfferPlayer = saverPlayer;
+				return null;
+			}
 			int arr3[] = of.getItem(myIndex);
 			arr3[1]--;
 			arr3[0]++;
@@ -578,12 +656,17 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 
 			
 			int in = this.getPlayerBestNow(free);
-			chance =Math.random();
-			if(chance>0.7) {
+			if(myIndex==-1) {
+				this.lastAgentOfferPlayer = saverPlayer;
+				this.lastAgentOfferAgent = saverAgent;
+				return null;
+			}
+			double chance =Math.random();
+			if(chance>0.8) {
 				in = this.getRndomProd(free);
 			}
 			
-			free[index]=0;
+			
 			
 			int arr2[] = of.getItem(in);
 			arr2[1]--;
@@ -592,10 +675,33 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 
 			of.setItem(in,arr2);
 			this.lastOffer = of;
+			this.offer_num++;
 			return of;
 		}
 		
+		int goodAgent = this.getMyBestNow(free);
+		if(goodAgent>-1) {
+			free[goodAgent]--;
+			int goodPlayer= this.getPlayerBestNow(free);
+			if(goodPlayer>-1) {
+				int ar[]=of.getItem(goodAgent);
+				ar[0]++;
+				ar[1]--;
+				of.setItem(goodAgent, ar);
+				int ar1[]=of.getItem(goodPlayer);
+				ar1[2]++;
+				ar1[1]--;
+				of.setItem(goodPlayer, ar1);
+				this.lastOffer = of;
+				this.lastAgentOfferAgent[goodAgent]=1;
+				this.lastAgentOfferPlayer[goodPlayer]=1;
+				return of;
+			}
+			
+		}
 		
+		this.lastAgentOfferPlayer = saverPlayer;
+		this.lastAgentOfferAgent = saverAgent;
 		return null;
 		
 	}
@@ -638,7 +744,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		playerprod[forPlayer]++;
 		this.lastAgentOfferAgent = agentprod;
 		this.lastAgentOfferPlayer = playerprod;
-		this.setLastAgentOffer();
+		this.offer_num++;
 		return propose;
 	}
 
@@ -651,20 +757,20 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	protected Offer getRejectOfferFollowup(History history) {
 //write a func depend on the time.		
 		
-		double chance = Math.random();
-		if(chance > 0.7) {
-			switch(this.reject) {
-			case 0:{
-				
-				
-			}case 1:{
-				
-			}case 2:{
-				
-			}
-			
-			}
-		}
+//		double chance = Math.random();
+//		if(chance > 0.7) {
+//			switch(this.reject) {
+//			case 0:{
+//				
+//				
+//			}case 1:{
+//				
+//			}case 2:{
+//				
+//			}
+//			
+//			}
+//		}
 		return null;
 	}
 	
