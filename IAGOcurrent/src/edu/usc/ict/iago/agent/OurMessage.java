@@ -7,6 +7,7 @@ import java.util.Random;
 
 import edu.usc.ict.iago.agent.OurBehavior.LedgerBehavior;
 import edu.usc.ict.iago.utils.Event;
+import edu.usc.ict.iago.utils.Event.EventClass;
 import edu.usc.ict.iago.utils.GameSpec;
 import edu.usc.ict.iago.utils.History;
 import edu.usc.ict.iago.utils.MessagePolicy;
@@ -19,7 +20,6 @@ import edu.usc.ict.iago.utils.ServletUtils;
 
 public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
 	protected final String[] proposal = {"I think this deal is good for the both of us.", 
-			"I think you'll find this offer to be satisfactory.", 
 			"I think this arrangement is fair.", 
 			"I think this deal will interest you.",
 	"Please consider this deal?"};
@@ -38,23 +38,22 @@ public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
 
 	protected final String[] vhReject = {
 			"I'm sorry, but I don't think that's fair to me.",
-			"Apologies, but that won't work for me.",
-			"Perhaps we should spend more time finding a solution that's good for us both...",
-	"I won't be able to accept that.  So sorry. :("};
+			"Let's try to find something that would benefit both of us.",
+			"Perhaps we should spend more time finding a solution that's good for us both",
+	"I won't be able to accept this offer, sorry!"};
 
 	protected final String[] vhAccept = {
 			"Your offer is good!",
 			"That seems like a good deal.",
-			"That will work for me.",
-	"Yes. This deal will work."};
+			"That will work for me!.",
+	"Great, This deal will work."};
 
 	protected final String[] vhWaiting = {
 			"Hello? Are you still there?",
 			"No rush, but are you going to send me an offer?",
-			"Can I do anything to help us reach a deal that's good for us both?",
-			"I'm sorry, but are you still there?",
-	"Can I provide more information to help us reach consensus?",
-	"Would you please make an offer?","We should try harder to find a deal that benefits us both.", null};
+			"Can I do anything to help us reach a deal that's good for both of us?",
+			"I'm sorry, but are you still there?"
+	,"We should try harder to find a deal that benefits us both.", null};
 	
 	private String[] vhIdleQuestions = {"Do you like something best?", "So could you tell me about your preferences?"};	//P++ will only use each of these messages once at the game's start before trying other messages
 
@@ -569,9 +568,10 @@ public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
 		if (value != -1) {
 			resp = new Event(agentID, Event.EventClass.SEND_MESSAGE, sc, value, str, delay);				
 		} else {
-			resp = new Event(agentID, Event.EventClass.SEND_MESSAGE, sc, str, delay);	
+			
+			resp = new Event(agentID, Event.EventClass.SEND_MESSAGE,str, delay);	
 		}
-
+		
 		if (relation != null) {
 			resp.encodePreferenceData(new Preference(issue1, issue2, relation, isQuery), gs);
 		}

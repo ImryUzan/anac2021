@@ -108,7 +108,8 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				totalFree += allocated.getItem(issue)[1]; // adds up middle row of board, calculate unclaimed items
 			}
 			propose = equalOffer(history);
-			updateAllocated(propose);
+			if(propose!=null) {updateAllocated(propose);}
+			
 		} while(totalFree > 0); // Continue calling getNextOffer while there are still items left unclaimed
 		this.lastOffer = propose;
 		return propose;
@@ -147,7 +148,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				int numberMinusOne = tmp/2;
 				int[] arr =copyAllocate(allocated.getItem(issue));
 				arr[2]= arr[2]+numberMinusOne;
-				arr[1] = 0;
+				arr[1] = 1;
 				arr[0] = arr[0]+numberMinusOne;
 				propose.setItem(issue, arr);
 				agent[issue] = agent[issue]+numberMinusOne;
@@ -162,8 +163,13 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			forAgent =1+(leftToSplit/2);
 			forPlayer =leftToSplit/2;	
 		} else {
-			forAgent =1+(leftToSplit/2);
-			forPlayer =leftToSplit/2;	
+			if(leftToSplit != 0) {
+			forAgent =leftToSplit/2;
+			forPlayer =leftToSplit/2;
+			} else {
+				forAgent = 0;
+				forPlayer = 0;
+			}
 		}
 		int countAgent = 0;
 		int countPlayer = 0;
@@ -250,14 +256,9 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		
 		Offer tmp = new Offer(game.getNumberIssues());
 		for(int issue = 0; issue < game.getNumberIssues(); issue++)
-			//secound reject tmp is wrong!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
 			tmp.setItem(issue,new int[] {this.lastPlayerOfferToAgent[issue], this.lastPlayerOfferFree[issue],this.lastPlayerOfferToPlayer[issue]});
 		
-		int agentProfit = utils.myActualOfferValue(tmp);
-//		Offer tmpPlayer = new Offer(game.getNumberIssues());
-//		for(int issue = 0; issue < game.getNumberIssues(); issue++)
-//			tmpPlayer.setItem(issue,this.lastPlayerOfferToPlayer);
-//		
+		int agentProfit = utils.myActualOfferValue(tmp);	
 		int playerProfit = utils.adversaryValue(tmp, utils.getMyOrdering());
 		propose = tmp;
 		if(agentProfit > playerProfit) {
@@ -292,48 +293,53 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			return propose;
 	
 		}else {
-			for(int i = 0; i < game.getNumberIssues(); i++)
+			//for(int i = 0; i < game.getNumberIssues(); i++)
+			while(agentProfit <= playerProfit)
 			{
-				if(agentProfit < playerProfit && free[i]>0) {
-					int[] arr =copyAllocate(propose.getItem(i));
-					arr[0] = arr[0] + arr[1];
-					arr[1] = 0;
-					propose.setItem(i, arr);
-					this.lastAgentOfferAgent[i] = arr[0];
-					this.lastAgentOfferPlayer[i] = arr[2];
-					agentProfit = utils.myActualOfferValue(propose);
-				}else {
-					// to check if the last offer should have this included since it's the offer we rejected
-					// so it did'nt get in but it suppsose to be part from the current offer
-					//but in regular lastoffer is only what happend in this turn! maybe because the rejection?
-					for(int j = 0; j < game.getNumberIssues(); j++)
-					{
-						int[] arr = propose.getItem(j);
-						this.lastAgentOfferPlayer[j] = arr[2];
-					}
-					this.lastOffer = propose;
-					this.offer_num++;
-					return propose;
+				int i = this.getMyBestNow(free);
+				if(i==-1) {
+					break;
 				}
+				int[] arr =copyAllocate(propose.getItem(i));
+				arr[0]++;
+				arr[1]--;
+				free[i]--;
+				propose.setItem(i, arr);
+				this.lastAgentOfferAgent[i]++;
+				agentProfit = utils.myActualOfferValue(propose);
+			
 			}
-			if(agentProfit > playerProfit) {
+			if(agentProfit >= playerProfit) {
 				this.lastOffer = propose;
 				this.offer_num++;
 				return propose;
 			}else {
+				this.lastAgentOfferPlayer=new int[game.getNumberIssues()];
+				this.lastAgentOfferAgent=new int[game.getNumberIssues()];
 				for(int issue = 0; issue < game.getNumberIssues(); issue++)
 					propose.setItem(issue,copyAllocate(allocated.getItem(issue)));
+				boolean flag = false;
+				free = this.getFreeProd();
 				for(int i = 0; i < game.getNumberIssues(); i++)
 				{
 					if(free[i]>1) {
+						flag= true;
 						int[] arr =copyAllocate(allocated.getItem(i));
 						arr[0]++;
 						arr[2]++;
 						arr[1] = arr[1]-2;
+						free[i] = free[i]-2;
 						propose.setItem(i, arr);
 						this.lastAgentOfferAgent[i]++;
 						this.lastAgentOfferPlayer[i]++;
 					}
+				}
+				if(!flag) {
+					this.lastAgentOfferPlayer= saverPlayer;
+					this.lastAgentOfferAgent=saverAgent;
+					this.lastOffer = propose;
+					this.offer_num++;
+					return null;
 				}
 				this.lastOffer = propose;
 				this.offer_num++;
@@ -342,32 +348,6 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		}
 	}
 		
-				
-		
-		
-//	public int scoreOffer(Offer offer)
-//    {
-//		int totalPoints = 0;
-//		for (int index = 0; index < game.getNumberIssues(); index++)
-//		{
-//			game.getIssuePluralText();
-//			String s = game.getIssuePluralText().get(index);
-//			totalPoints += offer.getItem(index)[0] * game.getSimplePoints(utils.getID()).get(s);
-//		}
-//		return totalPoints;
-//    }
-//	
-//	
-//	public double gradeOffer(Offer offer)
-//    {
-//    	double score = this.scoreOffer(offer);
-//    	if (score <= utils.myPresentedBATNA)
-//    		return 0.;
-//    	else if (score >= bestCaseOfferScore)
-//    		return 1.;
-//    	else
-//    		return score / (double)bestCaseOfferScore;
-//    }
 	
 	private int[] getFreeProd() {
 		int[] free = new int[game.getNumberIssues()];
@@ -735,8 +715,6 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				this.lastAgentOfferAgent[myIndex]++;
 			}
 			
-			//give him a random prod
-
 			
 			int in = this.getPlayerBestNow(free);
 			if(in==-1) {
@@ -826,7 +804,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 
 	@Override
 	protected Offer getRejectOfferFollowup(History history) {
-	int[] free = this.getFreeProd();
+	//int[] free = this.getFreeProd();
 	int saverPlayer[] = this.lastAgentOfferPlayer;
 	int saverAgent[] = this.lastAgentOfferAgent;
 	this.lastAgentOfferPlayer=new int[game.getNumberIssues()];
@@ -842,10 +820,10 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 		switch (rejectLevleCounter) {
 		case 0: {
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
-				if ( vhPref.get(issue) == 2 && free[issue]>0) {
+				if ( vhPref.get(issue) == 2 && this.lastOffer.getItem(issue)[1]>0) {
 					agentVal = issue;
 				}
-				if (vhPref.get(issue) == 4 && free[issue]>0) {
+				if (vhPref.get(issue) == 4 && this.lastOffer.getItem(issue)[1]>0) {
 					playerVal = issue;
 				}
 			}
@@ -855,13 +833,12 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				propose = getRejectOfferFollowup(history);
 				return propose;
 			}
-			if(playerVal == agentVal && free[agentVal]==1) {
+			if(playerVal == agentVal && this.lastOffer.getItem(agentVal)[1]==1) {
 				this.rejectLevleCounter++;
 				this.lastAgentOfferPlayer = saverPlayer;
 				this.lastAgentOfferAgent = saverAgent;
 				return null;
 			}
-			//do here update of propose to the last offer - the rejected one, same issue as in getnextoffer
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
 				propose.setItem(issue,new int[] {this.lastOffer.getItem(issue)[0], this.lastOffer.getItem(issue)[1],this.lastOffer.getItem(issue)[2]});	
 			}
@@ -882,10 +859,10 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			
 		} case 1: {
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
-				if ( vhPref.get(issue) == 1 && free[issue]>0) {
+				if ( vhPref.get(issue) == 1 && this.lastOffer.getItem(issue)[1]>0) {
 					agentVal = issue;
 				}
-				if (vhPref.get(issue) == 3 && free[issue]>0) {
+				if (vhPref.get(issue) == 3 && this.lastOffer.getItem(issue)[1]>0) {
 					playerVal = issue;
 				}
 			}
@@ -895,7 +872,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				propose = getRejectOfferFollowup(history);
 				return propose;
 			}
-			if(playerVal == agentVal && free[agentVal]==1) {
+			if(playerVal == agentVal && this.lastOffer.getItem(agentVal)[1]==1) {
 				this.rejectLevleCounter++;
 				this.lastAgentOfferPlayer = saverPlayer;
 				this.lastAgentOfferAgent = saverAgent;
@@ -921,10 +898,10 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			
 		} case 2: {
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
-				if ( vhPref.get(issue) == 1 && free[issue]>0) {
+				if ( vhPref.get(issue) == 1 && this.lastOffer.getItem(issue)[1]>0) {
 					agentVal = issue;
 				}
-				if (vhPref.get(issue) == 4 && free[issue]>1) {
+				if (vhPref.get(issue) == 4 && this.lastOffer.getItem(issue)[1]>1) {
 					playerVal = issue;
 				}
 			}
@@ -934,7 +911,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				propose = getRejectOfferFollowup(history);
 				return propose;
 			}
-			if(playerVal == agentVal && free[agentVal]==2) {
+			if(playerVal == agentVal && this.lastOffer.getItem(agentVal)[1]==2) {
 				this.rejectLevleCounter++;
 				this.lastAgentOfferPlayer = saverPlayer;
 				this.lastAgentOfferAgent = saverAgent;
@@ -960,10 +937,10 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	
 		}case 3: {
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
-				if ( vhPref.get(issue) == 1 && free[issue]>0) {
+				if ( vhPref.get(issue) == 1 && this.lastOffer.getItem(issue)[1]>0) {
 					agentVal = issue;
 				}
-				if (vhPref.get(issue) == 2 && free[issue]>0) {
+				if (vhPref.get(issue) == 2 && this.lastOffer.getItem(issue)[1]>0) {
 					playerVal = issue;
 				}
 			}
@@ -973,7 +950,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				propose = getRejectOfferFollowup(history);
 				return propose;
 			}
-			if(playerVal == agentVal && free[agentVal]==1) {
+			if(playerVal == agentVal && this.lastOffer.getItem(agentVal)[1]==1) {
 				this.rejectLevleCounter++;
 				this.lastAgentOfferPlayer = saverPlayer;
 				this.lastAgentOfferAgent = saverAgent;
@@ -999,10 +976,10 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	
 		} case 4: {
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
-				if ( vhPref.get(issue) == 2 && free[issue]>0) {
+				if ( vhPref.get(issue) == 2 && this.lastOffer.getItem(issue)[1]>0) {
 					agentVal = issue;
 				}
-				if (vhPref.get(issue) == 3 && free[issue]>0) {
+				if (vhPref.get(issue) == 3 && this.lastOffer.getItem(issue)[1]>0) {
 					playerVal = issue;
 				}
 			}
@@ -1012,7 +989,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				propose = getRejectOfferFollowup(history);
 				return propose;
 			}
-			if(playerVal == agentVal && free[agentVal]==1) {
+			if(playerVal == agentVal && this.lastOffer.getItem(agentVal)[1]==1) {
 				this.rejectLevleCounter++;
 				this.lastAgentOfferPlayer = saverPlayer;
 				this.lastAgentOfferAgent = saverAgent;
@@ -1038,10 +1015,10 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	
 		} case 5: {
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
-				if ( vhPref.get(issue) == 3 && free[issue]>0) {
+				if ( vhPref.get(issue) == 3 && this.lastOffer.getItem(issue)[1]>0) {
 					agentVal = issue;
 				}
-				if (vhPref.get(issue) == 4 && free[issue]>0) {
+				if (vhPref.get(issue) == 4 && this.lastOffer.getItem(issue)[1]>0) {
 					playerVal = issue;
 				}
 			}
@@ -1051,7 +1028,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 				this.lastAgentOfferAgent = saverAgent;
 				return null;
 			}
-			if(playerVal == agentVal && free[agentVal]==1) {
+			if(playerVal == agentVal && this.lastOffer.getItem(agentVal)[1]==1) {
 				this.rejectLevleCounter++;
 				this.lastAgentOfferPlayer = saverPlayer;
 				this.lastAgentOfferAgent = saverAgent;
@@ -1075,9 +1052,13 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			this.rejectLevleCounter++;
 			return propose;
 		} case 6: {
+			int[] free = new int[game.getNumberIssues()];
 			//the case we always will go into
 			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
 				propose.setItem(issue,new int[] {this.lastOffer.getItem(issue)[0], this.lastOffer.getItem(issue)[1],this.lastOffer.getItem(issue)[2]});	
+			}
+			for(int issue = 0; issue < game.getNumberIssues(); issue++) {
+				free[issue]= this.lastOffer.getItem(issue)[1];
 			}
 			int arr[] = new int[game.getNumberIssues()];
 			int[] oldfree = this.getFreeProd();
