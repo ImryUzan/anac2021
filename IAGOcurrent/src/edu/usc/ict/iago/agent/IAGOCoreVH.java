@@ -518,7 +518,8 @@ public abstract class IAGOCoreVH extends GeneralVH
 					Event eExpr = new Event(this.getID(), Event.EventClass.SEND_EXPRESSION, expr, 2000, (int) (700*game.getMultiplier()));
 					resp.add(eExpr);
 				}
-				Event e0 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.OFFER_ACCEPT, messages.getVHAcceptLang(getHistory(), game), (int) (700*game.getMultiplier()));
+				//Event e0 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.OFFER_ACCEPT, messages.getVHAcceptLang(getHistory(), game), (int) (700*game.getMultiplier()));
+				Event e0 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, messages.getVHAcceptLang(getHistory(), game), (int) (700*game.getMultiplier()));
 
 				resp.add(e0);
 				ServletUtils.log("ACCEPTED OFFER!", ServletUtils.DebugLevels.DEBUG);
@@ -536,7 +537,10 @@ public abstract class IAGOCoreVH extends GeneralVH
 					Event eExpr = new Event(this.getID(), Event.EventClass.SEND_EXPRESSION, expr, 2000, (int) (700*game.getMultiplier()));
 					resp.add(eExpr);
 				}
-				Event e0 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.OFFER_REJECT, messages.getVHRejectLang(getHistory(), game), (int) (700*game.getMultiplier()));
+				//Event e0 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.OFFER_REJECT, messages.getVHRejectLang(getHistory(), game), (int) (700*game.getMultiplier()));
+				String str =  messages.getVHRejectLang(getHistory(), game);
+				Event e0 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE,str, (int) (700*game.getMultiplier()));
+
 				//slightly alter the language
 				if (localEqual)
 					e0 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.OFFER_REJECT, messages.getVHEqualLang(), (int) (700*game.getMultiplier()));

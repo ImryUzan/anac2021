@@ -197,7 +197,7 @@ public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
 		if (ePrime.getType() == Event.EventClass.SEND_EXPRESSION && !game.isMultiAgent())
 		{
 			String str = getEmotionResponse(history, game, ePrime);
-			Event resp = new Event(agentID, Event.EventClass.SEND_MESSAGE, Event.SubClass.GENERIC_POS, str, delay); 
+			Event resp = new Event(agentID, Event.EventClass.SEND_MESSAGE, str, delay); 
 			return resp;
 		} 
 		else if (ePrime.getType() == Event.EventClass.SEND_EXPRESSION) 
@@ -290,8 +290,8 @@ public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
 			str = "I'm sorry, have I done something wrong?  I'm just trying to make sure we both get the things that make us the most happy.";
 			sc = Event.SubClass.GENERIC_NEG;
 
-			if(!isFull)
-				str += "  Besides, what about the rest of the undecided items?";
+//			if(!isFull)
+//				str += "  Besides, what about the rest of the undecided items?";
 
 			break;
 		case OFFER_REJECT:
@@ -445,10 +445,10 @@ public class OurMessage extends IAGOCoreMessage implements MessagePolicy {
 				}
 			}
 			break;
-		//case OFFER_REJECT: 
-		//	sc = Event.SubClass.GENERIC_NEG;
-		//	str = this.getRejectLang(history, game);
-		//	break;
+//		case OFFER_REJECT: 
+//			sc = Event.SubClass.GENERIC_NEG;
+//			str = this.getRejectLang(history, game);
+//			break;
 		case OFFER_ACCEPT:
 			sc = Event.SubClass.GENERIC_POS;
 			str = this.getAcceptLang(history, game);
