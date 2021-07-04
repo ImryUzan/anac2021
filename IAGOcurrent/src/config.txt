@@ -5,7 +5,7 @@
 agent0= 
 agent1= edu.usc.ict.iago.agent.IAGOUrsulaFavorVH
 #NOTE: Gamespec specified which game will be loaded into the system.
-gamespec=edu.usc.ict.iago.views.ViralGameSpec
+gamespec=edu.usc.ict.iago.views.ViralGameSpec,edu.usc.ict.iago.views.ViralGameSpec2,edu.usc.ict.iago.views.ViralGameSpec3
 
 #Turing Mode forces all messages to be preset (it disables sending hand-crafted messages) based on the SubClass
 

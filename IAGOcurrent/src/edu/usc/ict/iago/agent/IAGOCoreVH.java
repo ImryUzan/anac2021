@@ -465,7 +465,8 @@ public abstract class IAGOCoreVH extends GeneralVH
 			{//net positive (o is a better offer than allocated)
 				int myValue = utils.myActualOfferValue(o) - utils.myActualOfferValue(allocated) + behavior.getAcceptMargin();
 				ServletUtils.log("My target: " + myValue, ServletUtils.DebugLevels.DEBUG);
-				int opponentValue = utils.adversaryValue(o, utils.getMinimaxOrdering()) - utils.adversaryValue(allocated, utils.getMinimaxOrdering());
+				//int opponentValue = utils.adversaryValue(o, utils.getMinimaxOrdering()) - utils.adversaryValue(allocated, utils.getMinimaxOrdering());
+				int opponentValue = utils.adversaryValue(o, utils.getMyOrdering()) - utils.adversaryValue(allocated, utils.getMyOrdering());
 				if(myValue > opponentValue)
 					localFair = true;//offer improvement is within one max value item of the same for me and my opponent
 				else if (myValue == opponentValue && !firstOffer)
