@@ -98,6 +98,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	@Override
 	protected Offer getFinalOffer(History history)
 	{
+		this.reject_local_num = 0;
 		Offer propose = new Offer(game.getNumberIssues());
 		int totalFree = 0;
 		do 
@@ -237,6 +238,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	@Override
 	public Offer getNextOffer(History history) 
 	{	
+		this.reject_local_num = 0;
 		int saverPlayer[] = this.lastAgentOfferPlayer;
 		int saverAgent[] = this.lastAgentOfferAgent;
 		this.lastAgentOfferPlayer=new int[game.getNumberIssues()];
@@ -454,6 +456,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	
 	@Override
 	protected Offer getTimingOffer(History history) {
+		this.reject_local_num = 0;
 		if(!TimingFlag) {
 			TimingFlag = true;
 			int[] free = this.getFreeProd();
@@ -567,6 +570,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 	
 	@Override
 	protected Offer getAcceptOfferFollowup(History history) {
+		this.reject_local_num = 0;
 		int saverPlayer[] = this.lastAgentOfferPlayer;
 		int saverAgent[] = this.lastAgentOfferAgent;
 		Offer of = this.NewOffer();
@@ -799,7 +803,8 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 
 	@Override
 	protected int getAcceptMargin() {
-		return Math.max(0, Math.min(game.getNumberIssues(), adverseEvents));//basic decaying will, starts with fair
+		return 0;
+		//return Math.max(0, Math.min(game.getNumberIssues(), adverseEvents));//basic decaying will, starts with fair
 	}
 
 	@Override
@@ -1188,7 +1193,7 @@ public class OurBehavior extends IAGOCoreBehavior implements BehaviorPolicy {
 			throw new IllegalArgumentException("Unexpected value: " + rejectLevleCounter);
 		}
 	} else {
-		if(	this.reject_local_num > 4) {
+		if(	this.reject_local_num > 3) {
 			this.reject_local_num = 0;
 			this.lastAgentOfferPlayer = saverPlayer;
 			this.lastAgentOfferAgent = saverAgent;

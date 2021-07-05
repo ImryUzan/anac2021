@@ -214,13 +214,16 @@ public abstract class IAGOCoreVH extends GeneralVH
 		{
 			ServletUtils.log("First offer being made.", ServletUtils.DebugLevels.DEBUG);
 			firstFlag = true;
+			String revealBATNA = "My name is Oliver,I think you should know that I already have an offer for " + utils.myPresentedBATNA + " points, so I can't accept anything less. I hope we will find deal that benefits us both";
+			Event e5 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, utils.myPresentedBATNA, revealBATNA,  (int) (3000*game.getMultiplier()));
+			resp.add(e5);
 			Event e2 = new Event(this.getID(), Event.EventClass.SEND_OFFER, behavior.getFirstOffer(getHistory()), 0); 
 			if(e2.getOffer() != null)
 			{
 				ServletUtils.log("First offer isn't null.", ServletUtils.DebugLevels.DEBUG);
 				Event e3 = new Event(this.getID(), Event.EventClass.OFFER_IN_PROGRESS, 0);
 				resp.add(e3);
-				Event e4 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.NONE, messages.getProposalLangFirst(),  (int) (1000*game.getMultiplier()));
+				Event e4 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.NONE, messages.getProposalLangFirst(),  (int) (20000*game.getMultiplier()));
 				resp.add(e4);
 				lastOfferSent = e2.getOffer();
 				if(favorOfferIncoming)
@@ -231,9 +234,17 @@ public abstract class IAGOCoreVH extends GeneralVH
 				resp.add(e2);
 			}
 
-			String revealBATNA = "Just so you know, I already have an offer for " + utils.myPresentedBATNA + " points, so I won't accept anything less.   What about you?";
-			Event e5 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.BATNA_INFO, utils.myPresentedBATNA, revealBATNA,  (int) (1000*game.getMultiplier()));
-			resp.add(e5);
+//			String revealBATNA = "Just so you know, I already have an offer for " + utils.myPresentedBATNA + " points, so I won't accept anything less.   What about you?";
+//			Event e5 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.BATNA_INFO, utils.myPresentedBATNA, revealBATNA,  (int) (1000*game.getMultiplier()));
+//			
+			
+			String str = "By the way, will you tell me a little about your preferences so i can offer you good products?";
+			Event e111 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, str, (int) (1000*game.getMultiplier()));
+			e111.setFlushable(false);
+			resp.add(e111);
+			
+			
+//			resp.add(e5);
 			disable = false;
 			
 			Event e6 = messages.getFavorBehavior(getHistory(), game, e);
@@ -421,7 +432,7 @@ public abstract class IAGOCoreVH extends GeneralVH
 			}
 
 			// At 90 second, computer agent will send prompt for user to talk about preferences
-			if (e.getMessage().equals("5") && this.getID() == History.OPPONENT_ID) 
+			if (e.getMessage().equals("90") && this.getID() == History.OPPONENT_ID) 
 			{
 				String str = "By the way, will you tell me a little about your preferences?";
 				Event e1 = new Event(this.getID(), Event.EventClass.SEND_MESSAGE, Event.SubClass.PREF_REQUEST, str, (int) (1000*game.getMultiplier()));
@@ -477,7 +488,8 @@ public abstract class IAGOCoreVH extends GeneralVH
 			{
 				totalFair = ((IAGOCompetitiveBehavior) behavior).acceptOffer(o);
 			}
-			else if(utils.myActualOfferValue(o) + behavior.getAcceptMargin() > utils.adversaryValue(o, utils.getMinimaxOrdering()))
+			//changed here to .getMyOrdering() insted minmax
+			else if(utils.myActualOfferValue(o) + behavior.getAcceptMargin() > utils.adversaryValue(o, utils.getMyOrdering()))
 				totalFair = true;//total offer still fair
 			
 			//totalFair too hard, so always set to true here

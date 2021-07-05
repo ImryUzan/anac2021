@@ -21,8 +21,8 @@ public class IAGOUrsulaFavorVH extends IAGOCoreVH {
 	 */
 	public IAGOUrsulaFavorVH(String name, GameSpec game, Session session)
 	{
-		super("UrsulaFavor", game, session, new OurBehavior(OurBehavior.LedgerBehavior.LIMITED), new OurExpression(), 
-				new OurMessage(false, false,OurBehavior.LedgerBehavior.LIMITED, game));	
+		super("UrsulaFavor", game, session, new OurBehavior(OurBehavior.LedgerBehavior.NONE), new OurExpression(), 
+				new OurMessage(false, false,OurBehavior.LedgerBehavior.NONE, game));	
 		
 		super.safeForMultiAgent = true;
 	}

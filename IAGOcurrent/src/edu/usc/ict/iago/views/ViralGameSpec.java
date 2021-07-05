@@ -43,10 +43,10 @@ class ViralGameSpec extends GameSpec{
 			e.printStackTrace();
 		}
 
-		simpleVHPoints.put(getIssuePluralText().get(0), 2);
-		simpleVHPoints.put(getIssuePluralText().get(1), 1);
-		simpleVHPoints.put(getIssuePluralText().get(2), 4);
-		simpleVHPoints.put(getIssuePluralText().get(3), 3);
+		simpleVHPoints.put(getIssuePluralText().get(0), 10);
+		simpleVHPoints.put(getIssuePluralText().get(1), 5);
+		simpleVHPoints.put(getIssuePluralText().get(2), 5);
+		simpleVHPoints.put(getIssuePluralText().get(3), 5);
 		
 		simplePlayerPoints.put(getIssuePluralText().get(0), 2);
 		simplePlayerPoints.put(getIssuePluralText().get(1), 3);
